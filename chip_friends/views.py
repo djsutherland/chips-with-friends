@@ -7,7 +7,7 @@ from flask_security import login_required
 from peewee import fn, JOIN, SQL
 
 from .app import app
-from .forms import ConfirmationForm, UsageForm
+from .forms import ConfirmationForm, UsageForm, QRCodeForm
 from .models import User, QRCode, QRUse
 
 
@@ -31,7 +31,7 @@ def pick_barcode():
     end = datetime.datetime.combine(today, datetime.time.max)
     uses_today = (QRUse.select()
                        .where(QRUse.when >= begin)
-                       .where(QRUse.wher <= end)
+                       .where(QRUse.when <= end)
                        .where(QRUse.confirmed | (QRUse.confirmed >> None)))
     used_today = QRCode.select().join(QRUse).where(QRUse.id << uses_today)
     q = (QRCode
@@ -116,7 +116,13 @@ def use_specific(qr_id):
     return render_template('use-specific.html', use=use, form=form)
 
 
-@app.route('/new-card/')
+@app.route('/new-card/', methods=['GET', 'POST'])
 @login_required
 def new_card():
-    return abort(500)  # FIXME
+    form = QRCodeForm(request.form)
+    if form.validate_on_submit():
+        qr_code = QRCode()
+        form.populate_obj(qr_code)
+        qr_code.save()
+        return redirect(url_for('index'))
+    return render_template('new-card.html', form=form)

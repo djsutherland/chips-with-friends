@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}New Barcode{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    #used {
+        margin-right: 1em;
+    }
+    #amount_saved {
+        width: 4em;
+    }
+    #submit {
+        margin-left: 1em;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<p>Adding a barcode!</p>
+
+<p>First, go register your card and log in <a href="https://chipotle.com/chiptopia">on the site</a>.</p>
+
+<p>Then, go to the "print digital card" link and get that URL:
+it should look like
+<tt>https://chipotle.com/chiptopia-barcode?barcode=A_LONG_STRING</tt>.
+Make sure you get the whole thing!</p>
+
+<form action="" method="post">
+{% if form.errors %}
+    <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+{% endif %}
+    {{ form.registrant.label }}: {{ form.registrant }} <br/>
+    {{ form.phone.label }}: {{ form.phone }} <br/>
+    {{ form.barcode.label }}: {{ form.barcode }} <br/>
+    {{ form.csrf_token }}
+    <input id="submit" type="submit" value="Submit" />
+</form>
+
+
+{% endblock %}
