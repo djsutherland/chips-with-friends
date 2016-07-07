@@ -68,3 +68,6 @@ class QRUse(BaseModel):
     qr_code = pw.ForeignKeyField(QRCode)
     when = pw.DateTimeField()
     confirmed = pw.BooleanField(null=True, default=None)
+
+    def __unicode__(self):
+        return "{} used {} on {:%m/%d}".format(self.user, self.qr_code, self.when)

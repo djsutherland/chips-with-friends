@@ -6,22 +6,24 @@ from flask_login import current_user
 from flask_security import login_required
 
 from .app import app
-from .models import QRCode, QRUse
+from .models import User, QRCode, QRUse
 
 
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html')
+    me = User(**current_user._data)
+    my_uses = QRUse.select().where(QRUse.user == me)
+    return render_template('index.html', my_uses=my_uses)
 
 
 @app.route('/use/')
 @login_required
 def pick_barcode():
+    me = User(**current_user._data)
     qr = QRCode.get()  # FIXME logic here
-    qr_use = QRUse(user_id=current_user.id, qr_code=qr,
-                when=datetime.datetime.now(),
-                confirmed=None)
+    qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
+                   confirmed=None)
     qr_use.save()
     return redirect(url_for('use', use_id=qr_use.id))
 

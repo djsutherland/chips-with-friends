@@ -5,4 +5,30 @@
 <p>Hi {{ current_user.name }}!</p>
 
 <p><a href="{{ url_for('pick_barcode') }}">Use a barcode</a></p>
+
+{% if my_uses %}
+<p>Your uses:</p>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Whose</th>
+<th colspan="2">Confirmed?</th>
+</tr>
+</thead>
+<tbody>
+{% for use in my_uses %}
+<tr>
+<td>{{ use.when.strftime("%m/%d") }}</td>
+<td>{{ use.user.name }}</td>
+<td>{% if use.confirmed == true %}&#x2713;{% else %}<a href="{{ url_for('use_confirm', use_id=use.id) }}">confirm</a>{% endif %}</td>
+<td>{% if use.confirmed == false %}×{% else %}<a href="{{ url_for('use_cancel', use_id=use.id) }}">cancel</a>{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<p>You haven't used any cards yet!</p>
+{% endif %}
+
 {% endblock %}
