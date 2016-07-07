@@ -8,7 +8,7 @@
     #uses .canceled .date, #uses .canceled .name {
         text-decoration: line-through;
     }
-    #uses .unknown .confirm, #uses .unknown .cancel {
+    #uses .unknown .status, #uses .unknown .update {
         font-weight: bold;
     }
     </style>
@@ -34,8 +34,8 @@
 <tr class="{% if use.confirmed == true %}confirmed{% elif use.confirmed == false %}canceled{% else %}unknown{% endif %}">
 <td class="date">{{ use.when.strftime("%m/%d") }}</td>
 <td class="name">{{ use.qr_code.registrant }}</td>
-<td class="confirm">{% if use.confirmed == true %}✓{% else %}<a href="{{ url_for('use_confirm', use_id=use.id) }}">confirm</a>{% endif %}</td>
-<td class="cancel">{% if use.confirmed == false %}×{% else %}<a href="{{ url_for('use_cancel', use_id=use.id) }}">cancel</a>{% endif %}</td>
+<td class="status">{% if use.confirmed == true %}✓{% elif use.confirmed == false %}×{% else %}???{% endif %}</td>
+<td class="update"><a href="{{ url_for('use', use_id=use.id) }}">change</a></td>
 </tr>
 {% endfor %}
 </tbody>

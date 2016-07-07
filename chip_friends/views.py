@@ -7,6 +7,7 @@ from flask_security import login_required
 from peewee import fn, JOIN, SQL
 
 from .app import app
+from .forms import ConfirmationForm
 from .models import User, QRCode, QRUse
 
 
@@ -49,14 +50,23 @@ def pick_barcode():
     return redirect(url_for('use', use_id=qr_use.id))
 
 
-@app.route('/use/<int:use_id>/')
+@app.route('/use/<int:use_id>/',methods=['GET', 'POST'])
 @login_required
 def use(use_id):
     try:
         use = QRUse.get(QRUse.id == use_id)
     except QRUse.DoesNotExist:
         return abort(404)
-    return render_template('use.html', use=use)
+
+    form = ConfirmationForm()
+    if form.validate_on_submit():
+        use.confirmed = form.used.data
+        use.free_amount = form.amount_saved.data if use.confirmed else None
+        use.save()
+
+        view = 'use_confirm' if use.confirmed else 'use_cancel'
+        return redirect(url_for(view, use_id=use_id))
+    return render_template('use.html', use=use, form=form)
 
 
 @app.route('/use/confirm/<int:use_id>/')
@@ -66,9 +76,6 @@ def use_confirm(use_id):
         use = QRUse.get(QRUse.id == use_id)
     except QRUse.DoesNotExist:
         return abort(404)
-
-    use.confirmed = True
-    use.save()
     return render_template('confirm.html', use=use)
 
 
@@ -79,9 +86,6 @@ def use_cancel(use_id):
         use = QRUse.get(QRUse.id == use_id)
     except QRUse.DoesNotExist:
         return abort(404)
-
-    use.confirmed = False
-    use.save()
     return render_template('cancel.html', use=use)
 
 

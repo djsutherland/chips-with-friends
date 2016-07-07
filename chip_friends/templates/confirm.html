@@ -3,7 +3,12 @@
 {% block title %}Confirmed a Use{% endblock %}
 
 {% block body %}
-<p>{{ use.qr_code.registrant }}'s card was confirmed used by {{ current_user.name }} on {{ use.when.strftime("%m/%d") }}.</p>
+<p>
+{{ use.qr_code.registrant }}'s card was confirmed used by {{ current_user.name }} on {{ use.when.strftime("%m/%d") }}.
+{% if use.free_amount %}
+You redeemed a free meal worth ${{ use.free_amount }}.
+{% endif %}
+</p>
 
 <p>Thanks!</p>
 

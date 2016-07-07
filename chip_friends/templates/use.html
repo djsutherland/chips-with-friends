@@ -2,14 +2,44 @@
 
 {% block title %}Use a Barcode{% endblock %}
 
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    #used {
+        margin-right: 1em;
+    }
+    #amount_saved {
+        width: 4em;
+    }
+    #submit {
+        margin-left: 1em;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
 
 <p>Hi! You're about to use {{ use.qr_code.registrant }}'s barcode.</p>
 
 <p><a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}">Go here</a> to use the code. The phone number is {{ use.qr_code.phone }} if they want that instead.</p>
 
-<p>Once you've used it, <b>come back here</b> and <a href="{{ url_for('use_confirm', use_id=use.id) }}">confirm</a>.</p>
+<p>Once you've used it, or changed your mind, <b>come back here</b> and confirm:</p>
 
-<p>Changed your mind? <a href="{{ url_for('use_cancel', use_id=use.id) }}">Cancel this use</a>.</p>
+<form action="" method="post">
+{% if form.errors %}
+    <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+{% endif %}
+    {{ form.used.label }}: {{ form.used }}
+    {{ form.amount_saved.label }}: ${{ form.amount_saved }}
+    {{ form.csrf_token }}
+    <input id="submit" type="submit" value="Submit" />
+</form>
+
 
 {% endblock %}
