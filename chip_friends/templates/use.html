@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}Use a Barcode{% endblock %}
+
+{% block body %}
+
+<p>Hi! You're about to use {{ use.qr_code.user.name }}'s barcode.</p>
+
+<p><a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}">Go here</a> to use the code.</p>
+
+<p>Once you've used it, <b>come back here</b> and <a href="{{ url_for('use_confirm', use_id=use.id) }}">confirm</a>.</p>
+
+<p>Changed your mind? <a href="{{ url_for('use_cancel', use_id=use.id) }}">Cancel this use</a>.</p>
+
+{% endblock %}

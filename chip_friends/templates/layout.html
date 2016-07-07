@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>
+    {%- block fulltitle -%} 
+    {%- block title %}{% endblock %}{% block titlesep %} &laquo; {% endblock titlesep %}Chiptopia With Friends!
+    {%- endblock -%}
+  </title>
+
+  {# <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" /> #}
+  <style type="text/css">
+    #content { margin: 5px; }
+    a, a:visited { text-decoration: none; color: blue; }
+    a:hover, a:visited:hover { color: red; }
+  </style>
+
+  {% block head %}
+  {% endblock %}
+</head>
+<body>
+  <div id="content">
+    {% block body %}{% endblock %}
+  </div>
+</body>
+</html>

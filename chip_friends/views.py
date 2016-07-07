@@ -1,9 +1,12 @@
 from __future__ import unicode_literals
+import datetime
 
-from flask import render_template
+from flask import abort, redirect, render_template, url_for
+from flask_login import current_user
 from flask_security import login_required
 
 from .app import app
+from .models import QRCode, QRUse
 
 
 @app.route('/')
@@ -11,10 +14,49 @@ from .app import app
 def index():
     return render_template('index.html')
 
-@app.route('/profile')
+
+@app.route('/use/')
 @login_required
-def profile():
-    return render_template(
-        'profile.html',
-        content='Prifle Page',
-        facebook_conn=social.facebook.get_connection())
+def pick_barcode():
+    qr = QRCode.get()  # FIXME logic here
+    qr_use = QRUse(user_id=current_user.id, qr_code=qr,
+                when=datetime.datetime.now(),
+                confirmed=None)
+    qr_use.save()
+    return redirect(url_for('use', use_id=qr_use.id))
+
+
+@app.route('/use/<int:use_id>/')
+@login_required
+def use(use_id):
+    try:
+        use = QRUse.get(QRUse.id == use_id)
+    except QRUse.DoesNotExist:
+        return abort(404)
+    return render_template('use.html', use=use)
+
+
+@app.route('/use/confirm/<int:use_id>/')
+@login_required
+def use_confirm(use_id):
+    try:
+        use = QRUse.get(QRUse.id == use_id)
+    except QRUse.DoesNotExist:
+        return abort(404)
+
+    use.confirmed = True
+    use.save()
+    return render_template('confirm.html', use=use)
+
+
+@app.route('/use/cancel/<int:use_id>/')
+@login_required
+def use_cancel(use_id):
+    try:
+        use = QRUse.get(QRUse.id == use_id)
+    except QRUse.DoesNotExist:
+        return abort(404)
+
+    use.confirmed = False
+    use.save()
+    return render_template('cancel.html', use=use)

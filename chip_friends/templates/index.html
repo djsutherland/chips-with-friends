@@ -1,8 +1,8 @@
-<html>
-<head>
-<title>Chiptopia Friends!</title>
-</head>
-<body>
-Hi {{ current_user.name }}!
-</body>
-</html>
+{% extends "layout.html" %}
+{% block titlesep %}{% endblock %}
+
+{% block body %}
+<p>Hi {{ current_user.name }}!</p>
+
+<p><a href="{{ url_for('pick_barcode') }}">Use a barcode</a></p>
+{% endblock %}

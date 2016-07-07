@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block title %}Canceled a Use{% endblock %}
+
+{% block body %}
+<p>Canceled your use of {{ use.qr_code.user.name }}'s card on {{ use.when.strftime("%m/%d") }}.</p>
+
+<p>:(</p>
+{% endblock %}

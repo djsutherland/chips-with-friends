@@ -25,6 +25,9 @@ class User(BaseModel, UserMixin):
     confirmed_at = pw.DateTimeField(null=True)
     name = pw.TextField()
 
+    def __unicode__(self):
+        return '{}'.format(self.name)
+
 
 class UserRoles(BaseModel):
     # Because peewee does not come with built-in many-to-many
@@ -47,3 +50,21 @@ class Connection(BaseModel):
     profile_url = pw.CharField(max_length=512, null=True)
     image_url = pw.CharField(max_length=512, null=True)
     rank = pw.IntegerField(null=True)
+
+
+################################################################################
+
+
+class QRCode(BaseModel):
+    barcode = pw.TextField()
+    user = pw.ForeignKeyField(User)
+
+    def __unicode__(self):
+        return "{}".format(self.user)
+
+
+class QRUse(BaseModel):
+    user = pw.ForeignKeyField(User)
+    qr_code = pw.ForeignKeyField(QRCode)
+    when = pw.DateTimeField()
+    confirmed = pw.BooleanField(null=True, default=None)
