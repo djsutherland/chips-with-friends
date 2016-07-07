@@ -6,4 +6,6 @@
 <p>{{ use.qr_code.user.name }}'s card was confirmed used by {{ current_user.name }} on {{ use.when.strftime("%m/%d") }}.</p>
 
 <p>Thanks!</p>
+
+<p><a href="{{ url_for('index') }}">go home</a></p>
 {% endblock %}
