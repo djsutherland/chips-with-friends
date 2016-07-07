@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import datetime
 
 from flask_security import UserMixin, RoleMixin
 import peewee as pw
@@ -57,10 +58,25 @@ class Connection(BaseModel):
 
 class QRCode(BaseModel):
     barcode = pw.TextField()
-    user = pw.ForeignKeyField(User)
+    registrant = pw.CharField()
 
     def __unicode__(self):
-        return "{}".format(self.user)
+        return "{}".format(self.registrant)
+
+    def total_uses(self):
+        return len(self.qruse_set
+                       .where(QRUse.confirmed | (QRUse.confirmed >> None)))
+
+    def uses_today(self):
+        today = datetime.date.today()
+        begin = datetime.datetime.combine(today, datetime.time.min)
+        end = datetime.datetime.combine(today, datetime.time.max)
+        return (self.qruse_set
+                       .where(QRUse.when.between(begin, end))
+                       .where(QRUse.confirmed | (QRUse.confirmed >> None)))
+
+    def used_today(self):
+        return bool(self.uses_today())
 
 
 class QRUse(BaseModel):

@@ -4,6 +4,7 @@ import datetime
 from flask import abort, redirect, render_template, url_for
 from flask_login import current_user
 from flask_security import login_required
+from peewee import fn, JOIN, SQL
 
 from .app import app
 from .models import User, QRCode, QRUse
@@ -14,14 +15,33 @@ from .models import User, QRCode, QRUse
 def index():
     me = User(**current_user._data)
     my_uses = QRUse.select().where(QRUse.user == me)
-    return render_template('index.html', my_uses=my_uses)
+    qrs = QRCode.select()
+    return render_template('index.html', my_uses=my_uses, qrs=qrs)
 
 
 @app.route('/use/')
 @login_required
 def pick_barcode():
     me = User(**current_user._data)
-    qr = QRCode.get()  # FIXME logic here
+
+    today = datetime.date.today()
+    begin = datetime.datetime.combine(today, datetime.time.min)
+    end = datetime.datetime.combine(today, datetime.time.max)
+    uses_today = (QRUse.select()
+                       .where(QRUse.when.between(begin, end))
+                       .where(QRUse.confirmed | (QRUse.confirmed >> None)))
+    used_today = QRCode.select().join(QRUse).where(QRUse.id << uses_today)
+    q = (QRCode
+        .select(QRCode, fn.Count(QRUse.id).alias('count'))
+        .where(QRCode.id.not_in(list(used_today)))
+        .join(QRUse, JOIN.LEFT_OUTER)
+        .order_by(SQL('count')))
+    # FIXME: handle monthly status stuff
+
+    qr = q.get()
+    if qr.id is None:
+        return render_template('no_codes.html', uses_today=uses_today)
+
     qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
                    confirmed=None)
     qr_use.save()
@@ -62,3 +82,9 @@ def use_cancel(use_id):
     use.confirmed = False
     use.save()
     return render_template('cancel.html', use=use)
+
+
+@app.route('/new-card/')
+@login_required
+def new_card():
+    return abort(500)  # FIXME
