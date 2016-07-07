@@ -52,7 +52,7 @@
 <tr>
   <th>Whose</th>
   <th>Total uses</th>
-  <th>Used today?</th>
+  <th colspan="2">Used today?</th>
 </tr>
 </thead>
 <tbody>
@@ -61,6 +61,7 @@
   <td>{{ qr.registrant }}</td>
   <td>{{ qr.total_uses() }}</td>
   <td>{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
+  <td><a href="{{ url_for('use_specific', qr_id=qr.id) }}">use</a></td>
 </tr>
 {% endfor %}
 </tbody>

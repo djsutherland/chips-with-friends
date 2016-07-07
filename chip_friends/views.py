@@ -7,7 +7,7 @@ from flask_security import login_required
 from peewee import fn, JOIN, SQL
 
 from .app import app
-from .forms import ConfirmationForm
+from .forms import ConfirmationForm, UsageForm
 from .models import User, QRCode, QRUse
 
 
@@ -15,7 +15,7 @@ from .models import User, QRCode, QRUse
 @login_required
 def index():
     me = User(**current_user._data)
-    my_uses = QRUse.select().where(QRUse.user == me)
+    my_uses = QRUse.select().where(QRUse.user == me).order_by(QRUse.when.desc())
     qrs = QRCode.select().order_by(QRCode.registrant)
     # TODO: sort QRs by total uses...
     return render_template('index.html', my_uses=my_uses, qrs=qrs)
@@ -30,7 +30,8 @@ def pick_barcode():
     begin = datetime.datetime.combine(today, datetime.time.min)
     end = datetime.datetime.combine(today, datetime.time.max)
     uses_today = (QRUse.select()
-                       .where(QRUse.when.between(begin, end))
+                       .where(QRUse.when >= begin)
+                       .where(QRUse.wher <= end)
                        .where(QRUse.confirmed | (QRUse.confirmed >> None)))
     used_today = QRCode.select().join(QRUse).where(QRUse.id << uses_today)
     q = (QRCode
@@ -86,6 +87,33 @@ def use_cancel(use_id):
     except QRUse.DoesNotExist:
         return abort(404)
     return render_template('cancel.html', use=use)
+
+
+@app.route('/use-specific/<int:qr_id>/', methods=['GET', 'POST'])
+@login_required
+def use_specific(qr_id):
+    me = User(**current_user._data)
+    try:
+        qr = QRCode.get(QRCode.id == qr_id)
+    except QRCode.DoesNotExist:
+        return abort(404)
+
+    use = QRUse(qr_code=qr, user=me)
+
+    form = UsageForm(request.form, use)
+    form.qr_code = qr
+    form.qr_use = use
+
+    if form.validate_on_submit():
+        form.populate_obj(use)
+        use.confirmed = True
+        if isinstance(use.when, datetime.date):
+            use.when = datetime.datetime.combine(use.when, datetime.time(0, 0, 1))
+        use.save()
+
+        view = 'use_confirm' if use.confirmed else 'use_cancel'
+        return redirect(url_for(view, use_id=use.id))
+    return render_template('use-specific.html', use=use, form=form)
 
 
 @app.route('/new-card/')

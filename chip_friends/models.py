@@ -68,13 +68,16 @@ class QRCode(BaseModel):
         return len(self.qruse_set
                        .where(QRUse.confirmed | (QRUse.confirmed >> None)))
 
+    def uses(self):
+        return self.qruse_set.where(QRUse.confirmed | (QRUse.confirmed >> None))
+
+    def uses_on(self, date):
+        begin = datetime.datetime.combine(date, datetime.time.min)
+        end = datetime.datetime.combine(date, datetime.time.max)
+        return self.uses().where(QRUse.when >= begin).where(QRUse.when <= end)
+
     def uses_today(self):
-        today = datetime.date.today()
-        begin = datetime.datetime.combine(today, datetime.time.min)
-        end = datetime.datetime.combine(today, datetime.time.max)
-        return (self.qruse_set
-                       .where(QRUse.when.between(begin, end))
-                       .where(QRUse.confirmed | (QRUse.confirmed >> None)))
+        return self.uses_on(datetime.date.today())
 
     def used_today(self):
         return bool(self.uses_today())

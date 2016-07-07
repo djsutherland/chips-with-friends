@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}Use a Barcode{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    #when {
+        margin-right: 1em;
+    }
+    #amount_saved {
+        width: 4em;
+    }
+    #submit {
+        margin-left: 1em;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<p>You're adding a use of {{ use.qr_code.registrant }}'s barcode.</p>
+
+<p>If you haven't already used it, please consider using the best-available code (from <a href="{{ url_for('index') }}">the homepage</a>).</p>
+
+<form action="" method="post">
+{% if form.errors %}
+    <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+{% endif %}
+    {{ form.when.label }}: {{ form.when }}
+    {{ form.free_amount.label }}: ${{ form.free_amount }}
+    {{ form.csrf_token }}
+    <input id="submit" type="submit" value="Submit" />
+</form>
+
+
+{% endblock %}
