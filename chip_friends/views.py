@@ -21,7 +21,7 @@ def index():
     return render_template('index.html', my_uses=my_uses, qrs=qrs)
 
 
-@app.route('/use/')
+@app.route('/use/', methods=['POST'])
 @login_required
 def pick_barcode():
     me = User(**current_user._data)
