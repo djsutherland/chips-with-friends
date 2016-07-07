@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import datetime
 
-from flask import abort, redirect, render_template, url_for
+from flask import abort, redirect, render_template, request, url_for
 from flask_login import current_user
 from flask_security import login_required
 from peewee import fn, JOIN, SQL
@@ -58,10 +58,9 @@ def use(use_id):
     except QRUse.DoesNotExist:
         return abort(404)
 
-    form = ConfirmationForm()
+    form = ConfirmationForm(request.form, use)
     if form.validate_on_submit():
-        use.confirmed = form.used.data
-        use.free_amount = form.amount_saved.data if use.confirmed else None
+        form.populate_obj(use)
         use.save()
 
         view = 'use_confirm' if use.confirmed else 'use_cancel'

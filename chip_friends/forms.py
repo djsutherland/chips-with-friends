@@ -4,8 +4,8 @@ from wtforms.validators import NumberRange, Optional
 
 
 class ConfirmationForm(Form):
-    used = BooleanField(
+    confirmed = BooleanField(
         'Used the code?', default='checked', validators=[Optional()])
-    amount_saved = DecimalField(
-        'Amount redeemed free',
+    free_amount = DecimalField(
+        'Free meal value?',
         validators=[Optional(), NumberRange(min=0, max=500)])

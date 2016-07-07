@@ -35,8 +35,8 @@
         {% endfor %}
     </ul>
 {% endif %}
-    {{ form.used.label }}: {{ form.used }}
-    {{ form.amount_saved.label }}: ${{ form.amount_saved }}
+    {{ form.confirmed.label }}: {{ form.confirmed }}
+    {{ form.free_amount.label }}: ${{ form.free_amount }}
     {{ form.csrf_token }}
     <input id="submit" type="submit" value="Submit" />
 </form>
