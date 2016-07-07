@@ -1,4 +1,5 @@
 /venv
+/chip_friends.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
