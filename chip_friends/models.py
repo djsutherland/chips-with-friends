@@ -59,6 +59,7 @@ class Connection(BaseModel):
 class QRCode(BaseModel):
     barcode = pw.TextField()
     registrant = pw.CharField()
+    phone = pw.CharField()
 
     def __unicode__(self):
         return "{}".format(self.registrant)

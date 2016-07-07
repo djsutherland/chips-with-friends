@@ -9,9 +9,16 @@
 
   {# <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" /> #}
   <style type="text/css">
-    #content { margin: 5px; }
+    #content {
+      margin: 5px;
+    }
     a, a:visited { text-decoration: none; color: blue; }
     a:hover, a:visited:hover { color: red; }
+
+    #disclaimer {
+      margin-top: 3em;
+      font-size: smaller;
+    }
   </style>
 
   {% block head %}
@@ -21,5 +28,10 @@
   <div id="content">
     {% block body %}{% endblock %}
   </div>
+
+  <p id="disclaimer">
+  Yes, I know this site is ugly. <a href="https://github.com/dougalsutherland/chiptopia-with-friends/">Pull requests welcome</a>.
+  </p>
+
 </body>
 </html>

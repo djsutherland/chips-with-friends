@@ -6,7 +6,7 @@
 
 <p>Hi! You're about to use {{ use.qr_code.registrant }}'s barcode.</p>
 
-<p><a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}">Go here</a> to use the code.</p>
+<p><a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}">Go here</a> to use the code. The phone number is {{ use.qr_code.phone }} if they want that instead.</p>
 
 <p>Once you've used it, <b>come back here</b> and <a href="{{ url_for('use_confirm', use_id=use.id) }}">confirm</a>.</p>
 

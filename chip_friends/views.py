@@ -15,7 +15,8 @@ from .models import User, QRCode, QRUse
 def index():
     me = User(**current_user._data)
     my_uses = QRUse.select().where(QRUse.user == me)
-    qrs = QRCode.select()
+    qrs = QRCode.select().order_by(QRCode.registrant)
+    # TODO: sort QRs by total uses...
     return render_template('index.html', my_uses=my_uses, qrs=qrs)
 
 
