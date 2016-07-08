@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import random
 import string
 
@@ -21,11 +22,16 @@ app.social = Social(app, PeeweeConnectionDatastore(db, Connection))
 def on_login_failed(sender, provider, oauth_response):
     connection_values = get_connection_values_from_oauth_response(
         provider, oauth_response)
-    ds = app.security.datastore
+    name = connection_values['full_name']
+    if isinstance(name, dict):
+        try:
+            name = '{} {}'.format(name['givenName'], name['familyName'])
+        except (ValueError, KeyError):
+            pass
     password = ''.join(random.choice(string.ascii_letters) for _ in range(20))
-    user = ds.create_user(
-        email='', password=password, name=connection_values['full_name'])
-    ds.commit()
+    user, new = User.get_or_create(
+            name=name, defaults={'email': '', 'password': password})
+    # don't bother using the datastore, just use the model
 
     connection_values['user_id'] = user.id
     connect_handler(connection_values, provider)
