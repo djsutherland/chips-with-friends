@@ -4,7 +4,7 @@
 
 {% block body %}
 <p>
-{{ use.qr_code.registrant }}'s card was confirmed used by {{ current_user.name }} on {{ use.when.strftime("%m/%d") }}.
+{{ use.qr_code.registrant }}'s code was confirmed used by {{ current_user.name }} on {{ use.when.strftime("%m/%d") }}.
 {% if use.redeemed_free %}You redeemed a free meal.
 {% else %}You paid for the meal.{% endif %}
 </p>
