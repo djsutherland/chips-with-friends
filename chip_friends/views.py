@@ -134,6 +134,9 @@ def new_card():
     if form.validate_on_submit():
         qr_code = QRCode()
         form.populate_obj(qr_code)
+        s = qr_code.barcode.find('?barcode=')
+        if s != -1:
+            qr_code.barcode = qr_code.barcode[s + len('?barcode='):]
         qr_code.save()
         return redirect(url_for('index'))
     return render_template('new-card.html', form=form)
