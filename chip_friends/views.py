@@ -113,9 +113,8 @@ def use_specific(qr_id):
         if isinstance(use.when, datetime.date):
             use.when = datetime.datetime.combine(use.when, datetime.time(0, 0, 1))
         use.save()
-
-        view = 'use_confirm' if use.confirmed else 'use_cancel'
-        return redirect(url_for(view, use_id=use.id))
+        return redirect(url_for(
+            'use_confirm', use_id=use.id, redeemed_free=use.redeemed_free))
     return render_template('use-specific.html', use=use, form=form)
 
 
