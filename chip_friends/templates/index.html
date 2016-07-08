@@ -5,11 +5,20 @@
     {{ super() }}
 
     <style type="text/css">
+    #use-barcode {
+        font-size: 300%;
+    }
     #uses .canceled .date, #uses .canceled .name {
         text-decoration: line-through;
     }
     #uses .unknown .status, #uses .unknown .update {
         font-weight: bold;
+    }
+    #uses .confirmed, #uses .redeemed, #cards .total-uses, #cards .used-today {
+        text-align: center;
+    }
+    #cards .used-it {
+        font-size: 75%;
     }
     </style>
 {% endblock %}
@@ -17,7 +26,7 @@
 {% block body %}
 <p>Hi {{ current_user.name }}! (<a href="{{ url_for('security.logout') }}">logout</a>)</p>
 
-<p><form action="{{ url_for('pick_barcode') }}" method="POST"><input type="submit" value="Use a barcode" /></form></p>
+<p><form action="{{ url_for('pick_barcode') }}" method="POST"><input type="submit" value="Use a barcode" id="use-barcode" /></form></p>
 
 {% if my_uses %}
 <p>Your uses:</p>
@@ -27,7 +36,7 @@
 <th>Date</th>
 <th>Whose</th>
 <th>Confirmed?</th>
-<th>Redeemed</th>
+<th>Redeemed meal?</th>
 </tr>
 </thead>
 <tbody>
@@ -52,16 +61,16 @@
 <tr>
   <th>Whose</th>
   <th>Total uses</th>
-  <th colspan="2">Used today?</th>
+  <th>Used today?</th>
 </tr>
 </thead>
 <tbody>
 {% for qr in qrs %}
 <tr>
-  <td>{{ qr.registrant }}</td>
-  <td>{{ qr.total_uses() }}</td>
-  <td>{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
-  <td><a href="{{ url_for('use_specific', qr_id=qr.id) }}">used it*</a></td>
+  <td class="registrant">{{ qr.registrant }}</td>
+  <td class="total-uses">{{ qr.total_uses() }}</td>
+  <td class="used-today">{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
+  <td class="used-it"><a href="{{ url_for('use_specific', qr_id=qr.id) }}">used it*</a></td>
 </tr>
 {% endfor %}
 </tbody>
