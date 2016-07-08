@@ -33,12 +33,15 @@ def pick_barcode():
                        .where(QRUse.when >= begin)
                        .where(QRUse.when <= end)
                        .where(QRUse.confirmed | (QRUse.confirmed >> None)))
-    used_today = QRCode.select().join(QRUse).where(QRUse.id << uses_today)
     q = (QRCode
         .select(QRCode, fn.Count(QRUse.id).alias('count'))
-        .where(QRCode.id.not_in(list(used_today)))
         .join(QRUse, JOIN.LEFT_OUTER)
-        .order_by(SQL('count')))
+        .order_by(SQL('count').desc()))
+    used_today = list(QRCode.select().join(QRUse).where(QRUse.id << uses_today))
+    if used_today:
+        q = q.where(QRCode.id.not_in(list(used_today)))
+        # SQL breaks on empty IN queries...
+
     # FIXME: handle monthly status stuff
 
     qr = q.get()
