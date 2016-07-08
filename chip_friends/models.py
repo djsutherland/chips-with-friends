@@ -18,6 +18,9 @@ class Role(BaseModel, RoleMixin):
     name = pw.CharField(unique=True)
     description = pw.TextField(null=True)
 
+    def __unicode__(self):
+        return '{}'.format(self.name)
+
 
 class User(BaseModel, UserMixin):
     email = pw.TextField()
@@ -39,6 +42,9 @@ class UserRoles(BaseModel):
     name = property(lambda self: self.role.name)
     description = property(lambda self: self.role.description)
 
+    def __unicode__(self):
+        return '{} - {}'.format(self.user, self.role)
+
 
 class Connection(BaseModel):
     user = pw.ForeignKeyField(User)
@@ -51,6 +57,9 @@ class Connection(BaseModel):
     profile_url = pw.CharField(max_length=512, null=True)
     image_url = pw.CharField(max_length=512, null=True)
     rank = pw.IntegerField(null=True)
+
+    def __unicode__(self):
+        return '{} ({})'.format(self.user, self.provider_id)
 
 
 ################################################################################
