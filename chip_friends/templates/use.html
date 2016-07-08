@@ -19,7 +19,9 @@
 
 {% block body %}
 
-<p>Hi! You're about to use {{ use.qr_code.registrant }}'s barcode.</p>
+<p>You're using {{ use.qr_code.registrant }}'s barcode.
+<b>We just logged a use of it; if you don't actually use the card, cancel it below.</b>
+</p>
 
 <p><a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}">Go here</a> to use the code. The phone number is {{ use.qr_code.phone }} if they want that instead.</p>
 
