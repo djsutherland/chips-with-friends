@@ -64,7 +64,7 @@ def use(use_id):
 
     form = ConfirmationForm(
         request.form,
-        data={'confirmed': 'true' if use.confirmed else 'false',
+        data={'confirmed': 'false' if use.confirmed is False else 'true',
               'redeemed_free': 'true' if use.redeemed_free else 'false'})
     if form.validate_on_submit():
         use.confirmed = form.confirmed.data == 'true'
