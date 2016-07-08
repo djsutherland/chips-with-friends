@@ -22,11 +22,11 @@
 
 {% block body %}
 
-<p>You're using {{ use.qr_code.registrant }}'s barcode.
+<p>You're using {{ use.qr_code.registrant }}'s QR code.
 <b>We just logged a use of it; if you don't actually use the card, cancel it below.</b>
 </p>
 
-<p><input type="button" value="Show QR code" id="show-barcode" onclick="location.href='https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}'" /></p>
+<p><form action="https://chipotle.com/chiptopia-barcode" method="GET"><input type="hidden" name="barcode" value="{{ use.qr_code.barcode }}"><input type="submit" value="Show QR code" id="show-barcode" /></form></p>
 
 <p>The phone number is {{ use.qr_code.phone }} if they ask for that instead.</p>
 

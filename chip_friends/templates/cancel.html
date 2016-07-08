@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 
-{% block title %}Canceled a Use{% endblock %}
+{% block title %}Cancelled a Use{% endblock %}
 
 {% block body %}
-<p>Canceled your use of {{ use.qr_code.registrant }}'s code on {{ use.when.strftime("%m/%d") }}.</p>
+<p>Cancelled your use of {{ use.qr_code.registrant }}'s code on {{ use.when.strftime("%m/%d") }}.</p>
 
 <p>:(</p>
 
-<p><a href="{{ url_for('index') }}">go home</a></p>
+<p><form action="{{ url_for('index') }}" method="POST"><input type="submit" value="Go home" id="go-home" /></form></p>
 {% endblock %}
