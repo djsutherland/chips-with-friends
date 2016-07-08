@@ -26,7 +26,7 @@
 <b>We just logged a use of it; if you don't actually use the card, cancel it below.</b>
 </p>
 
-<p><form action="https://chipotle.com/chiptopia-barcode" method="GET"><button name="barcode" value="{{ use.qr_code.barcode }}" type="submit">Show the QR code</button></form></p>
+<p><a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}" class="button" id="show-barcode">Show the QR code</a></p>
 
 <p>The phone number is {{ use.qr_code.phone }} if they ask for that instead.</p>
 

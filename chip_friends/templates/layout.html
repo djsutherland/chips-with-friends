@@ -9,17 +9,32 @@
 
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='chipotle-icon.png') }}" />
   <style type="text/css">
-	table, th, td {
-	  border: 1px solid #ddd;
-	  border-collapse: collapse;
-	}
-	
+    table, th, td {
+      border: 1px solid #ddd;
+      border-collapse: collapse;
+    }
+    
+    .button {
+      background:#eee;
+      text-decoration:none;
+      color:black;
+      font-family:Arial, sans-serif;
+      padding:3px 5px;
+      border:1px solid #999;
+      cursor:default;
+    }
+    
+    .button:hover {
+      color:black;
+      border:1px solid #666;
+    }
+    
     #content {
       margin: 5px;
     }
     a, a:visited { text-decoration: none; color: blue; }
     a:hover, a:visited:hover { color: red; }
-
+    
     #disclaimer {
       margin-top: 3em;
       font-size: smaller;
