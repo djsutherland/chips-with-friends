@@ -7,7 +7,7 @@ from flask_security import login_required
 from peewee import fn, JOIN, SQL
 
 from .app import app
-from .forms import ConfirmationForm, UsageForm, QRCodeForm
+from .forms import UsageForm, QRCodeForm
 from .models import User, QRCode, QRUse
 
 
@@ -54,48 +54,37 @@ def pick_barcode():
     return redirect(url_for('use', use_id=qr_use.id))
 
 
-@app.route('/use/<int:use_id>/',methods=['GET', 'POST'])
+@app.route('/use/<int:use_id>/')
 @login_required
 def use(use_id):
     try:
         use = QRUse.get(QRUse.id == use_id)
     except QRUse.DoesNotExist:
         return abort(404)
-
-    form = ConfirmationForm(
-        request.form,
-        data={'confirmed': 'false' if use.confirmed is False else 'true',
-              'redeemed_free': 'true' if use.redeemed_free else 'false'})
-    if form.validate_on_submit():
-        use.confirmed = form.confirmed.data == 'true'
-        if use.confirmed:
-            use.redeemed_free = form.redeemed_free.data == 'true'
-        else:
-            use.redeemed_free = False
-        use.save()
-
-        view = 'use_confirm' if use.confirmed else 'use_cancel'
-        return redirect(url_for(view, use_id=use_id))
-    return render_template('use.html', use=use, form=form)
+    return render_template('use.html', use=use)
 
 
-@app.route('/use/confirm/<int:use_id>/')
+@app.route('/use/confirm/<int:use_id>/<int:redeemed_free>/', methods=['POST'])
 @login_required
-def use_confirm(use_id):
+def use_confirm(use_id, redeemed_free):
     try:
         use = QRUse.get(QRUse.id == use_id)
     except QRUse.DoesNotExist:
         return abort(404)
+    use.confirmed = True
+    use.redeemed_free = bool(redeemed_free)
+    use.save()
     return render_template('confirm.html', use=use)
 
 
-@app.route('/use/cancel/<int:use_id>/')
+@app.route('/use/cancel/<int:use_id>/', methods=['POST'])
 @login_required
 def use_cancel(use_id):
     try:
         use = QRUse.get(QRUse.id == use_id)
     except QRUse.DoesNotExist:
         return abort(404)
+    use.delete_instance()
     return render_template('cancel.html', use=use)
 
 

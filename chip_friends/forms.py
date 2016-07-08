@@ -8,19 +8,6 @@ from wtforms.validators import (
 
 from .models import QRCode, QRUse
 
-class ConfirmationForm(Form):
-    # confirmed = BooleanField(
-    #     'Used the code?', default='checked', validators=[Optional()])
-    confirmed = SelectField(
-        'Actually used it?',
-        choices=[('true', "Used the code"), ('false', "Didn't use the code")])
-    redeemed_free = SelectField(
-        'Paid for it?',
-        choices=[('false', 'Paid for the meal'),
-                 ('true', 'Redeemed a free meal')])
-    # redeemed_free = BooleanField(
-    #     'Free meal?', default=False, validators=[Optional()])
-
 class UsageForm(Form):
     when = DateField('Date used', validators=[InputRequired()])
     redeemed_free = SelectField(

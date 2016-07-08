@@ -32,21 +32,14 @@
 
 <p><b>Come back here</b> to confirm if you used it or not, and if you redeemed a free meal</p>
 
-<form action="" method="post">
-{% if form.errors %}
-    <ul class="errors">
-        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
-            {% for error in field_errors %}
-                <li>{{ form[field_name].label }}: {{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-    </ul>
-{% endif %}
-    {{ form.confirmed.label }}: {{ form.confirmed }}
-    {{ form.redeemed_free.label }}: {{ form.redeemed_free }}
-    {{ form.csrf_token }}
-    <input id="submit" type="submit" value="Submit" />
+<form action="{{ url_for('use_confirm', use_id=use.id, redeemed_free=0) }}" method="POST">
+  <input type="submit" value="I paid for my meal" />
 </form>
-
+<form action="{{ url_for('use_confirm', use_id=use.id, redeemed_free=1) }}" method="POST">
+  <input type="submit" value="I got a free meal" />
+</form>
+<form action="{{ url_for('use_cancel', use_id=use.id) }}" method="POST">
+  <input type="submit" value="I didn't actually use the code" />
+</form>
 
 {% endblock %}
