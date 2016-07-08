@@ -36,7 +36,7 @@
 <td class="date">{{ use.when.strftime("%m/%d") }}</td>
 <td class="name">{{ use.qr_code.registrant }}</td>
 <td class="status">{% if use.confirmed == true %}✓{% elif use.confirmed == false %}×{% else %}???{% endif %}</td>
-<td class="redeemed">{% if use.redeemed_free %}✓{% endif %}</td>
+<td class="redeemed">{% if use.redeemed_free %}✓{% else %}-{% endif %}</td>
 <td class="update"><a href="{{ url_for('use', use_id=use.id) }}">change</a></td>
 </tr>
 {% endfor %}
@@ -61,11 +61,12 @@
   <td>{{ qr.registrant }}</td>
   <td>{{ qr.total_uses() }}</td>
   <td>{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
-  <td><a href="{{ url_for('use_specific', qr_id=qr.id) }}">use</a></td>
+  <td><a href="{{ url_for('use_specific', qr_id=qr.id) }}">used it*</a></td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
+<p>*"used it" links are if you didn't go through the website to add the card.</p>
 
 <p><a href="{{ url_for('new_card') }}">Add a new card</a>.</p>
 
