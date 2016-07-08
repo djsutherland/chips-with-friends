@@ -59,9 +59,16 @@ def use(use_id):
     except QRUse.DoesNotExist:
         return abort(404)
 
-    form = ConfirmationForm(request.form, use)
+    form = ConfirmationForm(
+        request.form,
+        data={'confirmed': 'true' if use.confirmed else 'false',
+              'redeemed_free': 'true' if use.redeemed_free else 'false'})
     if form.validate_on_submit():
-        form.populate_obj(use)
+        use.confirmed = form.confirmed.data == 'true'
+        if use.confirmed:
+            use.redeemed_free = form.redeemed_free.data == 'true'
+        else:
+            use.redeemed_free = False
         use.save()
 
         view = 'use_confirm' if use.confirmed else 'use_cancel'
@@ -100,13 +107,17 @@ def use_specific(qr_id):
 
     use = QRUse(qr_code=qr, user=me)
 
-    form = UsageForm(request.form, use)
+    form = UsageForm(
+        request.form,
+        data={'when': use.when,
+              'redeemed_free': 'true' if use.redeemed_free else 'false'})
     form.qr_code = qr
     form.qr_use = use
 
     if form.validate_on_submit():
-        form.populate_obj(use)
         use.confirmed = True
+        use.redeemed_free = form.redeemed_free.data == 'true'
+        use.when = form.when.data
         if isinstance(use.when, datetime.date):
             use.when = datetime.datetime.combine(use.when, datetime.time(0, 0, 1))
         use.save()

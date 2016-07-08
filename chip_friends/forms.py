@@ -2,24 +2,31 @@ import datetime
 
 from flask_wtf import Form
 from wtforms.ext.dateutil.fields import DateField
-from wtforms.fields import BooleanField, DecimalField, StringField
+from wtforms.fields import BooleanField, SelectField, StringField
 from wtforms.validators import (
     InputRequired, NumberRange, Optional, ValidationError)
 
 from .models import QRCode, QRUse
 
 class ConfirmationForm(Form):
-    confirmed = BooleanField(
-        'Used the code?', default='checked', validators=[Optional()])
-    free_amount = DecimalField(
-        'Free meal value?',
-        validators=[Optional(), NumberRange(min=0, max=500)])
+    # confirmed = BooleanField(
+    #     'Used the code?', default='checked', validators=[Optional()])
+    confirmed = SelectField(
+        'Actually used it?',
+        choices=[('true', "Used the code"), ('false', "Didn't use the code")])
+    redeemed_free = SelectField(
+        'Paid for it?',
+        choices=[('false', 'Paid for the meal'),
+                 ('true', 'Redeemed a free meal')])
+    # redeemed_free = BooleanField(
+    #     'Free meal?', default=False, validators=[Optional()])
 
 class UsageForm(Form):
     when = DateField('Date used', validators=[InputRequired()])
-    free_amount = DecimalField(
-        'Free meal value?',
-        validators=[Optional(), NumberRange(min=0, max=500)])
+    redeemed_free = SelectField(
+        'Paid for it?',
+        choices=[('false', 'Paid for the meal'),
+                 ('true', 'Redeemed a free meal')])
 
     def validate_when(form, field):
         if field.data < datetime.date(2016, 7, 1):

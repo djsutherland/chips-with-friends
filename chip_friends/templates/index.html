@@ -26,7 +26,7 @@
 <tr>
 <th>Date</th>
 <th>Whose</th>
-<th colspan="2">Confirmed?</th>
+<th>Confirmed?</th>
 <th>Redeemed</th>
 </tr>
 </thead>
@@ -36,8 +36,8 @@
 <td class="date">{{ use.when.strftime("%m/%d") }}</td>
 <td class="name">{{ use.qr_code.registrant }}</td>
 <td class="status">{% if use.confirmed == true %}✓{% elif use.confirmed == false %}×{% else %}???{% endif %}</td>
+<td class="redeemed">{% if use.redeemed_free %}✓{% endif %}</td>
 <td class="update"><a href="{{ url_for('use', use_id=use.id) }}">change</a></td>
-<td class="redeemed">{% if use.free_amount is none %}–{% else %}${{ use.free_amount }}{% endif %}</td>
 </tr>
 {% endfor %}
 </tbody>

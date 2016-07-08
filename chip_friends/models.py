@@ -97,10 +97,10 @@ class QRUse(BaseModel):
     qr_code = pw.ForeignKeyField(QRCode)
     when = pw.DateTimeField()
     confirmed = pw.BooleanField(null=True, default=None)
-    free_amount = pw.DecimalField(null=True, default=None)
+    redeemed_free = pw.BooleanField(default=False)
 
     def __unicode__(self):
         s = "{} used {} on {:%m/%d}".format(self.user, self.qr_code, self.when)
-        if self.free_amount:
-            s += " (${})".format(self.free_amount)
+        if self.redeemed_free:
+            s += " (redeemed)"
         return s
