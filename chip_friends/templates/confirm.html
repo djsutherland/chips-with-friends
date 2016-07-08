@@ -11,5 +11,5 @@
 
 <p>Thanks!</p>
 
-<p><a href="{{ url_for('index') }}">go home</a></p>
+<p><form action="{{ url_for('index') }}" method="GET"><input type="submit" value="Go home" id="go-home" /></form></p>
 {% endblock %}
