@@ -103,4 +103,8 @@ class QRUse(BaseModel):
         s = "{} used {} on {:%m/%d}".format(self.user, self.qr_code, self.when)
         if self.redeemed_free:
             s += " (redeemed)"
+        if self.confirmed is False:
+            s += " (canceled)"
+        elif self.confirmed is None:
+            s += " (pending)"
         return s
