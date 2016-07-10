@@ -77,6 +77,16 @@ def use_confirm(use_id, redeemed_free):
     return render_template('confirm.html', use=use)
 
 
+@app.route('/use/confirmed/<int:use_id>/<int:redeemed_free>/')
+@login_required
+def use_confirmed(use_id, redeemed_free):
+    try:
+        use = QRUse.get(QRUse.id == use_id)
+    except QRUse.DoesNotExist:
+        return abort(404)
+    return render_template('confirm.html', use=use)
+
+
 @app.route('/use/cancel/<int:use_id>/', methods=['POST'])
 @login_required
 def use_cancel(use_id):
@@ -114,7 +124,7 @@ def use_specific(qr_id):
             use.when = datetime.datetime.combine(use.when, datetime.time(0, 0, 1))
         use.save()
         return redirect(url_for(
-            'use_confirm', use_id=use.id, redeemed_free=use.redeemed_free))
+            'use_confirmed', use_id=use.id, redeemed_free=use.redeemed_free))
     return render_template('use-specific.html', use=use, form=form)
 
 
