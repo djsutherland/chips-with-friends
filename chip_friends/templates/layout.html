@@ -8,37 +8,66 @@
   </title>
 
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='chipotle-icon.png') }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        font-size: 18px;
+        color: #111;
+    }
+
+    table {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
     table, th, td {
-      border: 1px solid #ddd;
-      border-collapse: collapse;
+        border: 1px solid #ddd;
+        border-collapse: collapse;
     }
-    
-    .button, .button:visited {
-      background: #eee;
-      text-decoration: none;
-      color: black;
-      font-family: Arial, sans-serif;
-      padding: 3px 5px;
-      border: 1px solid #999;
-      cursor: default;
+    td, th {
+        padding: 5px 8px;
     }
-    
-    .button:hover, .button:hover:visited {
-      color: black;
-      border: 1px solid #666;
+    tbody tr:nth-child(odd) {
+        background-color: #eee;
     }
-    
-    #content {
-      margin: 5px;
+
+    .button, .button:visited, input[type="submit"] {
+        background:#eee;
+        text-decoration: none;
+        color: #111;
+        font-family: sans-serif;
+        padding: 0.5em;
+        border: 1px solid #999;
+        cursor: default;
+        outline: none;
+        margin: 0.5em auto;
+        display: block;
     }
-	
-    a, a:visited { text-decoration: none; color: blue; }
-    a:hover, a:visited:hover { color: red; }
-    
+
+    .button:hover, .button:hover:visited, input[type="submit"]:hover {
+        color: #111;
+        border: 1px solid #666;
+    }
+
+    #content, #disclaimer {
+        margin: 0 auto;
+        width: 600px;
+        max-width: 90%;
+    }
+    a, a:visited { text-decoration: none; color: #36c; }
+    a:not(.button):hover, 
+    a:not(.button):visited:hover {
+        color: #a30;
+        text-decoration: underline;
+    }
+
     #disclaimer {
-      margin-top: 3em;
-      font-size: smaller;
+        margin-top: 3em;
+        font-size: 0.8em;
+        color: #333;
     }
   </style>
 
@@ -50,9 +79,9 @@
     {% block body %}{% endblock %}
   </div>
 
-  <p id="disclaimer">
+  <footer id="disclaimer">
   Yes, I know this site is ugly. <a href="https://github.com/dougalsutherland/chiptopia-with-friends/">Pull requests welcome</a>.
-  </p>
+  </footer>
 
 </body>
 </html>
