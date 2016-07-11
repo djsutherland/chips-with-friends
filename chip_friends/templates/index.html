@@ -6,7 +6,18 @@
 
     <style type="text/css">
     #use-barcode {
-        font-size: 300%;
+        font-size: 2em;
+        display: block;
+        background-color: #a30;
+        color: #fff;
+        border: 0;
+        outline: none;
+        padding: 0.5em;
+        margin: 0 auto;
+        max-width: 100%;
+    }
+    #use-barcode:hover {
+        background-color: #f30;
     }
     #uses .canceled .date, #uses .canceled .name {
         text-decoration: line-through;
@@ -17,8 +28,18 @@
     #uses .confirmed, #uses .canceled, #uses .unknown, #uses .redeemed, #cards .total-uses, #cards .used-today {
         text-align: center;
     }
-    #cards .used-this {
-        font-size: 75%;
+    #new-card {
+        font-size: 20px;
+    }
+    .used-today {
+        color: #fff;
+        font-weight: bold;
+    }
+    .used-today.used {
+        background-color: #492;
+    }
+    .used-today.unused {
+        background-color: #a30;
     }
     </style>
 {% endblock %}
@@ -71,13 +92,13 @@
 <tr>
   <td class="registrant">{{ qr.registrant }}</td>
   <td class="total-uses">{{ qr.total_uses() }}</td>
-  <td class="used-today">{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
+  <td class="used-today {% if qr.used_today() %}used{% else %}unused{% endif %}">{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
   <td class="used-this"><a href="{{ url_for('use_specific', qr_id=qr.id) }}">used this*</a></td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
-<p>*Click "used this" if you used a code without going through this website.</p>
+<p>* Click “used this” if you used a code without going through this website.</p>
 
 <p><form action="{{ url_for('new_card') }}" method="GET"><input type="submit" value="Add a new code" id="new-card" /></form></p>
 
