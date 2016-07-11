@@ -50,13 +50,12 @@
 <p><form action="{{ url_for('pick_barcode') }}" method="POST"><input type="submit" value="Use a QR code" id="use-barcode" /></form></p>
 
 {% if my_uses %}
-<p>Your uses:</p>
+<p><h4><u>Your uses:</u></h4></p>
 <table id="uses">
 <thead>
 <tr>
 <th>Date</th>
 <th>Whose</th>
-<th>Confirmed use?</th>
 <th>Free meal?</th>
 <th> </th>
 </tr>
@@ -66,9 +65,8 @@
 <tr class="{% if use.confirmed == true %}confirmed{% elif use.confirmed == false %}canceled{% else %}unknown{% endif %}">
 <td class="date">{{ use.when.strftime("%m/%d") }}</td>
 <td class="name">{{ use.qr_code.registrant }}</td>
-<td class="status">{% if use.confirmed == true %}✓{% elif use.confirmed == false %}×{% else %}???{% endif %}</td>
-<td class="redeemed">{% if use.redeemed_free %}✓{% else %}-{% endif %}</td>
-<td class="update"><a href="{{ url_for('use', use_id=use.id) }}">change</a></td>
+<td class="status">{% if use.redeemed_free %}free{% elif use.confirmed == true %}paid{% else %}???{% endif %}</td>
+<td class="update"><a href="{{ url_for('use', use_id=use.id) }}"><img src="{{ url_for('static', filename='pencil.png') }}" alt="edit this entry" height="32" width="32"></a></td>
 </tr>
 {% endfor %}
 </tbody>
@@ -77,7 +75,7 @@
 <p>You haven't used any codes yet!</p>
 {% endif %}
 
-<p>Code statuses:</p>
+<p><h4><u>Code statuses:</u></h4></p>
 <table id="cards">
 <thead>
 <tr>
@@ -93,12 +91,12 @@
   <td class="registrant">{{ qr.registrant }}</td>
   <td class="total-uses">{{ qr.total_uses() }}</td>
   <td class="used-today {% if qr.used_today() %}used{% else %}unused{% endif %}">{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
-  <td class="used-this"><a href="{{ url_for('use_specific', qr_id=qr.id) }}">used this*</a></td>
+  <td class="used-this"><a href="{{ url_for('use_specific', qr_id=qr.id) }}">use*</a></td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
-<p>* Click “used this” if you used a code without going through this website.</p>
+<p>* Click “use” if you used a particular code without going through this website.</p>
 
 <p><form action="{{ url_for('new_card') }}" method="GET"><input type="submit" value="Add a new code" id="new-card" /></form></p>
 
