@@ -7,7 +7,7 @@
     <style type="text/css">
     #use-barcode {
         font-size: 2em;
-        display: block;
+        display: inline;
         background-color: #a30;
         color: #fff;
         border: 0;
@@ -41,6 +41,12 @@
     .used-today.unused {
         background-color: #a30;
     }
+    .update {
+        font-size: 30px;
+    }
+    .used-this {
+        font-size: 30px;
+    }
     </style>
 {% endblock %}
 
@@ -66,7 +72,7 @@
 <td class="date">{{ use.when.strftime("%m/%d") }}</td>
 <td class="name">{{ use.qr_code.registrant }}</td>
 <td class="status">{% if use.redeemed_free %}free{% elif use.confirmed == true %}paid{% else %}???{% endif %}</td>
-<td class="update"><a href="{{ url_for('use', use_id=use.id) }}"><img src="{{ url_for('static', filename='pencil.png') }}" alt="edit this entry" height="32" width="32"></a></td>
+<td class="update"><a href="{{ url_for('use', use_id=use.id) }}">&#9998;</a></td>
 </tr>
 {% endfor %}
 </tbody>
@@ -91,12 +97,12 @@
   <td class="registrant">{{ qr.registrant }}</td>
   <td class="total-uses">{{ qr.total_uses() }}</td>
   <td class="used-today {% if qr.used_today() %}used{% else %}unused{% endif %}">{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
-  <td class="used-this"><a href="{{ url_for('use_specific', qr_id=qr.id) }}">use*</a></td>
+  <td class="used-this"><a href="{{ url_for('use_specific', qr_id=qr.id) }}">&#9997;</a></td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
-<p>* Click “use” if you used a particular code without going through this website.</p>
+<p>* Click <span class="used-this">&#9997;</span> if you used a particular code without going through this website.</p>
 
 <p><form action="{{ url_for('new_card') }}" method="GET"><input type="submit" value="Add a new code" id="new-card" /></form></p>
 
