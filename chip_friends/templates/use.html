@@ -5,17 +5,26 @@
 {% block head %}
 {{ super() }}
 <style type="text/css">
-    #show-barcode, input[type="submit"] {
-        font-size: 150%;
+	#show-barcode-wrapper {
+		text-align: center;
+		margin: 2em;
+	}
+    #show-barcode {
+        font-size: 2em;
+        color: #fff;
+        background-color: #a30;
+        max-width: 100%;
+        border: 0;
+        padding: 0.5em;
+        outline: none;
+        margin: 0 auto;
+        display: inline;
     }
-    #used {
-        margin-right: 1em;
+    #show-barcode:hover {
+        background-color: #f30;
     }
-    #amount_saved {
-        width: 4em;
-    }
-    #submit {
-        margin-left: 1em;
+    input[type="submit"] {
+        font-size: 1em;
     }
 </style>
 {% endblock %}
@@ -26,20 +35,14 @@
 <b>(We just logged a use; if you don't actually use it, cancel below.)</b>
 </p>
 
-<p><a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}" class="button" id="show-barcode">Show the QR code</a></p>
+<p id="show-barcode-wrapper"><a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}" class="button" id="show-barcode">Show the QR code</a></p>
 
 <p>The phone number is {{ use.qr_code.phone }} if they ask for that instead.</p>
 
-<p><b>Come back here</b> to confirm if you used the code, and whether you got a free meal (which still counts as a use!):</p>
+<p><b>Come back here</b> to confirm whether you actually used the code, and whether you got a free meal (which still counts as a use!):</p>
 
-<form action="{{ url_for('use_confirm', use_id=use.id, redeemed_free=0) }}" method="POST">
-  <input type="submit" value="I paid for my meal" />
-</form>
-<form action="{{ url_for('use_confirm', use_id=use.id, redeemed_free=1) }}" method="POST">
-  <input type="submit" value="I got a free meal" />
-</form>
-<form action="{{ url_for('use_cancel', use_id=use.id) }}" method="POST">
-  <input type="submit" value="I didn't actually use the code" />
-</form>
+<p><form action="{{ url_for('use_confirm', use_id=use.id, redeemed_free=0) }}" method="POST"><input type="submit" value="I paid for my meal" /></form></p>
+<p><form action="{{ url_for('use_confirm', use_id=use.id, redeemed_free=1) }}" method="POST"><input type="submit" value="I got a free meal" /></form></p>
+<p><form action="{{ url_for('use_cancel', use_id=use.id) }}" method="POST"><input type="submit" value="I didn't use the code" /></form></p>
 
 {% endblock %}

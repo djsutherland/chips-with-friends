@@ -7,14 +7,14 @@
     <style type="text/css">
     #use-barcode {
         font-size: 2em;
-        display: inline;
-        background-color: #a30;
         color: #fff;
-        border: 0;
-        outline: none;
-        padding: 0.5em;
-        margin: 0 auto;
+        background-color: #a30;
         max-width: 100%;
+        border: 0;
+        padding: 0.5em;
+        outline: none;
+        margin: 0 auto;
+        display: block;
     }
     #use-barcode:hover {
         background-color: #f30;
@@ -29,7 +29,7 @@
         text-align: center;
     }
     #new-card {
-        font-size: 20px;
+        font-size: 1em;
     }
     .used-today {
         color: #fff;
@@ -105,5 +105,7 @@
 <p>* Click <span class="used-this">&#9997;</span> if you used a particular code without going through this website.</p>
 
 <p><form action="{{ url_for('new_card') }}" method="GET"><input type="submit" value="Add a new code" id="new-card" /></form></p>
+
+<p><a href="{{ url_for('about') }}">What's all this for? How do I use this?</a></p>
 
 {% endblock %}
