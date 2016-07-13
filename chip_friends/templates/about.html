@@ -6,40 +6,45 @@
     {{ super() }}
 
     <style type="text/css">
+    input[type="submit"] {
+        font-size: 1em;
+    }
     #use-barcode {
         font-size: 1em;
         display: inline;
         background-color: #a30;
         color: #fff;
         border: 0;
+        border-radius: 3px;
         outline: none;
-        padding: 0.1em;
+        padding: 0em;
         margin: 0 auto;
         max-width: 100%;
     }
 	.fake-button {
-        background:#eee;
+        font-family: sans-serif;
         text-decoration: none;
         color: #111;
-        font-family: sans-serif;
-        padding: 0.1em;
+        background:#eee;
         border: 1px solid #999;
+        border-radius: 3px;
         cursor: default;
+        padding: 0em;
         outline: none;
-        margin: 0.5em auto;
+        margin: 0 auto;
         display: inline;
     }
     </style>
 {% endblock %}
 
 {% block body %}
-<p><strong>tl;dr</strong> cooperate to exploit Chiptopia (Chipotle's new promotion) to earn 3x more free meals.</p>
+<p><strong>tl;dr</strong> cooperative <del>exploitation</del><ins>participation</ins> in Chiptopia (Chipotle's new promotion), by combining rewards cards, can earn 3x more free meals than solo participation.</p>
  
 <p>Remember Chipotle's foodborne illnesses in 2015? After their stock dropped 55% and they shored up food safety, the next thing to do was win back customers. Chiptopia is the latest incarnation of free burrito promotions and it's the craziest one yet!</p>
 
-<p>[insert Chiptopia rewards table]</p>
+<p><img src="{{ url_for('static', filename='chiptopia-rewards.png') }}" width="100%" alt="Chipotle rewards table" /></p>
 
-<p>The idea is: every 4 meals you checkout with the Chiptopia rewards card, you get a free meal (which counts towards the next 4!). Even better, if you log at least 4/8/11 visits all three months, you get the Mild/Medium/Hot tier reward. This is great and all, but if you're a normal person who only eats 4-7 Chipotles per month, all you get is <strong>4 free meals</strong>. <em>Instead</em>, if you cooperate with a friend (pooling visits on one card), you'd earn the Hot tier reward of catering for 20, totaling <strong>29 free meals</strong>.</p>
+<p>The idea is: every 4 meals you checkout with the Chiptopia rewards card, you get a free meal (which counts towards the next 4!). Even better, if you log at least 4/8/11 visits all three months, you get the Mild/Medium/Hot tier reward. This is great and all, but if you're a normal person who only eats 4-7 Chipotles per month, all you get is <strong>4 free meals</strong>. <em>Instead</em>, if you cooperate with a friend (pooling visits on one card), you'd earn the Hot tier reward of catering for 20, totaling <strong>29 free meals</strong>. That's <strong>buy 1 get 1.16 free</strong> average, all three months - <em>say whaaat?</em></p>
 
 <p>We took this one step further by making a website loaded with Chiptopia cards. If you click <span id="use-barcode">Use a QR code</span>, the website chooses the best card for getting maximum Hot tier rewards. Then click <span class="fake-button">Show the QR code</span> before letting the cashier scan. If the card has accumulated a free meal, feel free to redeem it, but remember to click <span class="fake-button">I got a free meal</span> on the "Use a QR code" page.</p>
 
@@ -47,7 +52,7 @@
 
 <h2>F.A.Q.</h2>
 
-<p><strong>What if I accidentally click <span id="use-barcode">Use a QR code</span>?</strong> Return home, click &#9998;, and then <span class="fake-button">I didn't actually use the code</span>.</p>
+<p><strong>What if I accidentally click <span id="use-barcode">Use a QR code</span>?</strong> Return home, click &#9998;, and then <span class="fake-button">I didn't use the code</span>.</p>
 
 <p><strong>What if I click <span id="use-barcode">Use a QR code</span> but accidentally close the page but I get to use it?</strong> Return to home and click &#9998; to view that particular visit/QR code.</p>
 
