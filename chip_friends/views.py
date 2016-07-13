@@ -21,6 +21,12 @@ def index():
     return render_template('index.html', my_uses=my_uses, qrs=qrs)
 
 
+@app.route('/about/')
+@login_required
+def about():
+    return render_template('about.html')
+
+
 @app.route('/use/', methods=['POST'])
 @login_required
 def pick_barcode():
