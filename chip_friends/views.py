@@ -12,10 +12,12 @@ from .models import User, QRCode, QRUse
 
 
 @app.route('/')
-@login_required
 def index():
-    me = User(**current_user._data)
-    my_uses = QRUse.select().where(QRUse.user == me).order_by(QRUse.when.desc())
+    if current_user.is_authenticated:
+        me = User(**current_user._data)
+        my_uses = me.qruse_set.order_by(QRUse.when.desc())
+    else:
+        my_uses = None
     qrs = QRCode.select().order_by(QRCode.registrant)
     # TODO: sort QRs by total uses...
     return render_template('index.html', my_uses=my_uses, qrs=qrs)

@@ -51,7 +51,12 @@
 {% endblock %}
 
 {% block body %}
+{% if current_user.is_authenticated %}
 <p>Hi {{ current_user.name }}! (<a href="{{ url_for('security.logout') }}">logout</a>)</p>
+{% else %}
+<p>Hi not-logged-in person! You could <a href="{{ url_for('about') }}">learn how the site works</a>, then <a href="{{ url_for('security.login') }}">login</a> if you'd like.</p>
+<p></p>
+{% endif %}
 
 <p><form action="{{ url_for('pick_barcode') }}" method="POST"><input type="submit" value="Use a QR code" id="use-barcode" /></form></p>
 
