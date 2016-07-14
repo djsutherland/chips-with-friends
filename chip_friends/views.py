@@ -1,5 +1,7 @@
-from __future__ import unicode_literals
+from __future__ import division, unicode_literals
+import calendar
 import datetime
+import math
 
 from flask import abort, redirect, render_template, request, url_for
 from flask_login import current_user
@@ -36,6 +38,9 @@ def pick_barcode():
     today = datetime.date.today()
     begin = datetime.datetime.combine(today, datetime.time.min)
     end = datetime.datetime.combine(today, datetime.time.max)
+    total_days = calendar.monthrange(today.year, today.month)[1]
+    target = min(int(math.ceil(11 * today.day / total_days)) + 2, 11)
+
     uses_today = (QRUse.select()
                        .where(QRUse.when >= begin)
                        .where(QRUse.when <= end)
@@ -43,16 +48,30 @@ def pick_barcode():
     q = (QRCode
         .select(QRCode, fn.Count(QRUse.id).alias('count'))
         .join(QRUse, JOIN.LEFT_OUTER)
+        .group_by(QRCode.id)
         .order_by(SQL('count').desc()))
     used_today = list(QRCode.select().join(QRUse).where(QRUse.id << uses_today))
-    if used_today:
-        q = q.where(QRCode.id.not_in(list(used_today)))
-        # SQL breaks on empty IN queries...
+    if used_today:  # SQL breaks on empty IN queries...
+        q = q.where(QRCode.id.not_in(used_today))
 
-    # FIXME: handle monthly status stuff
+    # could *almost* do this in SQL, but it's hard, so don't.
+    max_below = None
+    min_above = None
+    for qr in q:
+        if qr.id is None or qr.count >= 11:
+            pass
+        elif qr.count < target:
+            if max_below is None or qr.count > max_below.count:
+                max_below = qr
+        else:
+            if min_above is None or qr.count < min_above.count:
+                min_above = qr
 
-    qr = q.get()
-    if qr.id is None:
+    if max_below is not None:
+        qr = max_below
+    elif min_above is not None:
+        qr = min_above
+    else:
         return render_template('no_codes.html', uses_today=uses_today)
 
     qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
