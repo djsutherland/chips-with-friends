@@ -40,24 +40,30 @@
 {% block body %}
 <p><strong>tl;dr</strong> cooperative <del>exploitation</del><ins>participation</ins> in Chiptopia (Chipotle's new promotion), by combining rewards cards, can earn 3x more free meals than solo participation.</p>
  
+<p><form action="{{ url_for('index') }}" method="GET"><input type="submit" value="Get started!" class="go-home" /></form></p>
+
 <p>Remember Chipotle's foodborne illnesses in 2015? After their stock dropped 55% and they shored up food safety, the next thing to do was win back customers. Chiptopia is the latest incarnation of free burrito promotions and it's the craziest one yet!</p>
 
 <p><img src="{{ url_for('static', filename='chiptopia-rewards.png') }}" width="100%" alt="Chipotle rewards table" /></p>
 
-<p>The idea is: every 4 meals you checkout with the Chiptopia rewards card, you get a free meal (which counts towards the next 4!). Even better, if you log at least 4/8/11 visits all three months, you get the Mild/Medium/Hot tier reward. This is great and all, but if you're a normal person who only eats 4-7 Chipotles per month, all you get is <strong>4 free meals</strong>. <em>Instead</em>, if you cooperate with a friend (pooling visits on one card), you'd earn the Hot tier reward of catering for 20, totaling <strong>29 free meals</strong>. That's <strong>buy 1 get 1.16 free</strong> average, all three months - <em>say whaaat?</em></p>
+<p>If you sign up for Chiptopia, you get a rewards card with a QR code. The idea is: every 4 meals you checkout with the Chiptopia rewards card, you get a free meal (which counts towards the next 4!). Even better, if you log at least 4/8/11 visits all three months, you get the Mild/Medium/Hot tier reward. This is great and all, but if you're a normal person who only eats 4-7 Chipotles per month, all you get is <strong>4 free meals</strong>. <em>Instead</em>, if you cooperate with a friend (pooling visits on one card), you'd earn the Hot tier reward of catering for 20, totaling <strong>29 free meals</strong>. That's <strong>buy 1 get 1.16 free</strong> average, all three months - <em>say whaaat?</em></p>
 
-<p>We took this one step further by making a website loaded with Chiptopia cards. If you click <span id="use-barcode">Use a QR code</span>, the website chooses the best card for getting maximum Hot tier rewards. Then click <span class="fake-button">Show the QR code</span> before letting the cashier scan. If the card has accumulated a free meal, feel free to redeem it, but remember to click <span class="fake-button">I got a free meal</span> on the "Use a QR code" page.</p>
+<p>We took this one step further by making a website loaded with Chiptopia cards. If you click <span id="use-barcode">Use a QR code</span>, the website runs a targetting algorithm to choose the best card for getting maximum Hot tier rewards. Then click <span class="fake-button">Show the QR code</span> before letting the cashier scan. If the card has accumulated a free meal, feel free to redeem it, but remember to go back and click <span class="fake-button">I got a free meal</span> on the "Use a QR code" page.</p>
 
-<p><form action="{{ url_for('index') }}" method="GET"><input type="submit" value="Get started!" id="go-home" /></form></p>
+<p><form action="{{ url_for('index') }}" method="GET"><input type="submit" value="Get started!" class="go-home" /></form></p>
 
 <h2>F.A.Q.</h2>
 
-<p><strong>What if I accidentally click <span id="use-barcode">Use a QR code</span>?</strong> Return home, click &#9998;, and then <span class="fake-button">I didn't use the code</span>.</p>
+<p><strong>How much free stuff will I get?</strong> As mentioned above, every 24 meals checked out with Chiptopia earns 29 free meals total. Wow! That means each time you use this website, you should get an additional 1.16 free meals in the end. Free meals you redeem through intermediate rewards count against this total. In October, we will use a sophisticated algorithm to apportion and schedule free meals. Or if nobody cares, maybe it'll just be free-for-all.</p>
 
-<p><strong>What if I click <span id="use-barcode">Use a QR code</span> but accidentally close the page but I get to use it?</strong> Return to home and click &#9998; to view that particular visit/QR code.</p>
+<p><strong>What if I accidentally click <span id="use-barcode">Use a QR code</span>?</strong> Return home, click &#9998;, and then <span class="fake-button">I didn't actually use the code</span>.</p>
+
+<p><strong>What if I click <span id="use-barcode">Use a QR code</span> but accidentally close the page but I get to use it?</strong> Return home and click &#9998; to view that particular visit/QR code.</p>
+
+<p><strong>How do I add my own card?</strong> Click <span class="fake-button">Add a new code</span> and follow the instructions. This will put your card at the end of the queue to be used by others. (Please add the phone number you signed up with, in case the cashier asks for the associated number.)</p>
 
 <p><strong>What if I want to use my own card, or don't use the suggested card?</strong> No problem! Just click &#9997; next the the card you used and manually log your visit.</p>
 
-<p><strong>How do I add my own card?</strong> Click <span class="fake-button">Add a new code</span> and follow the instructions. This will put your card at the end of the queue to be used by others. (Please add the phone number you signed up with, in case the cashier asks for the associated number.)</p>
+<p><strong>Is this allowed?</strong> Probably not since the <a href="https://chipotle.com/chiptopia-terms">terms</a> say you may not have "more than one Chiptopia account," although that's not exactly what we're doing. Will the employees care? No, nor would they notice if different customers among hundreds show up with the same name. Don't be obvious about it of course; load the QR code before ordering. Will administrators higher up try to stop us? Very unlikely considering the bureaucratic effort required to quash a very rare and inconsequential exploit. And worst case scenario, you're losing 1 extra free burrito for the chance to get 10 :)</p>
 
 {% endblock %}
