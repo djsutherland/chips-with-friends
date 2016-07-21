@@ -16,6 +16,8 @@ class UsageForm(Form):
                  ('true', 'Redeemed a free meal')])
 
     def validate_when(form, field):
+        if field.data is None:
+            return ValidationError("Must enter a date")
         if field.data < datetime.date(2016, 7, 1):
             raise ValidationError("Chiptopia only started in July!")
         if field.data > datetime.date.today():
