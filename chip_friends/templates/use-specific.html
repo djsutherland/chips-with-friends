@@ -21,7 +21,7 @@
 
 <p>You're adding a use of {{ use.qr_code.registrant }}'s QR code.</p>
 
-<p>If you haven't already used it, please consider using the best-available code (from <a href="{{ url_for('index') }}">the homepage</a>).</p>
+<p>If you haven't already used it, please consider using the best-available code (from <a href="{{ url_for('index') }}">the homepage</a>). But if you're sure, <a href="https://chipotle.com/chiptopia-barcode?barcode={{ use.qr_code.barcode }}">here's the code</a>.</p>
 
 <form action="" method="post">
 {% if form.errors %}

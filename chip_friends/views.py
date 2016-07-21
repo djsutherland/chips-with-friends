@@ -39,7 +39,7 @@ def pick_barcode():
     begin = datetime.datetime.combine(today, datetime.time.min)
     end = datetime.datetime.combine(today, datetime.time.max)
     total_days = calendar.monthrange(today.year, today.month)[1]
-    target = min(int(math.ceil(11 * today.day / total_days)) + 2, 11)
+    target = min(int(math.ceil(11 * today.day / total_days)) + 1, 11)
 
     uses_today = (QRUse.select()
                        .where(QRUse.when >= begin)
