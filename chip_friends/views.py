@@ -54,25 +54,37 @@ def pick_barcode():
     if used_today:  # SQL breaks on empty IN queries...
         q = q.where(QRCode.id.not_in(used_today))
 
-    # could *almost* do this in SQL, but it's hard, so don't.
-    max_below = None
-    min_above = None
-    for qr in q:
-        if qr.id is None or qr.count >= 11:
+    # TEMPORARY HACK: use Kelvin's, then Dougal's, then Ameya's, then others
+    q = list(q)
+    for pref in [3, 1, 2, 4, 6, 5]:
+        try:
+            qr = next(qr for qr in q if qr.id == pref and qr.count < 11)
+        except StopIteration:
             pass
-        elif qr.count < target:
-            if max_below is None or qr.count > max_below.count:
-                max_below = qr
         else:
-            if min_above is None or qr.count < min_above.count:
-                min_above = qr
-
-    if max_below is not None:
-        qr = max_below
-    elif min_above is not None:
-        qr = min_above
+            break
     else:
         return render_template('no_codes.html', uses_today=uses_today)
+
+    # # could *almost* do this in SQL, but it's hard, so don't.
+    # max_below = None
+    # min_above = None
+    # for qr in q:
+    #     if qr.id is None or qr.count >= 11:
+    #         pass
+    #     elif qr.count < target:
+    #         if max_below is None or qr.count > max_below.count:
+    #             max_below = qr
+    #     else:
+    #         if min_above is None or qr.count < min_above.count:
+    #             min_above = qr
+
+    # if max_below is not None:
+    #     qr = max_below
+    # elif min_above is not None:
+    #     qr = min_above
+    # else:
+    #     return render_template('no_codes.html', uses_today=uses_today)
 
     qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
                    confirmed=None)
