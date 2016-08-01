@@ -20,7 +20,8 @@ def index():
         my_uses = me.qruse_set.order_by(QRUse.when.desc())
     else:
         my_uses = None
-    qrs = QRCode.select().order_by(QRCode.status.desc(), QRCode.registrant)
+    qrs = QRCode.select().order_by(
+        QRCode.worst_status.desc(), QRCode.registrant)
     # TODO: sort QRs by total uses...
     return render_template('index.html', my_uses=my_uses, qrs=qrs)
 
@@ -61,7 +62,7 @@ def pick_barcode():
                  & (QRUse.when >= month_begin)
                  & (QRUse.when <= month_end))
         .group_by(QRCode.id)
-        .order_by(QRCode.status.desc(), SQL('count').asc()))
+        .order_by(QRCode.worst_status.desc(), SQL('count').asc()))
     used_today = list(QRCode.select().join(QRUse).where(QRUse.id << uses_today))
     if used_today:  # SQL breaks on empty IN queries...
         q = q.where(QRCode.id.not_in(used_today))

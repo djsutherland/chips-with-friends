@@ -73,14 +73,14 @@ class QRCode(BaseModel):
     barcode = pw.TextField()
     registrant = pw.CharField()
     phone = pw.CharField()
-    status = pw.CharField(max_length=1, choices=STATUSES)
+    worst_status = pw.CharField(max_length=1, choices=STATUSES)
 
     def __unicode__(self):
         return "{} ({})".format(self.registrant, self.status_name)
 
     @property
-    def status_name(self):
-        return STATUS_NAME[self.status]
+    def worst_status_name(self):
+        return STATUS_NAME[self.worst_status]
 
     def total_uses(self):
         return len(self.qruse_set

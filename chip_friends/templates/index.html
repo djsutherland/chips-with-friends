@@ -111,7 +111,7 @@
 {% for qr in qrs %}
 <tr>
   <td class="registrant">{{ qr.registrant }}</td>
-  <td class="status status-{{ qr.status_name }}">{{ qr.status_name }}</td>
+  <td class="status status-{{ qr.worst_status_name }}">{{ qr.worst_status_name }}</td>
   <td class="month-uses">{{ qr.uses_this_month() }}</td>
   <td class="used-today {% if qr.used_today() %}used{% else %}unused{% endif %}">{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
   <td class="used-this"><a href="{{ url_for('use_specific', qr_id=qr.id) }}">&#9997;</a></td>
