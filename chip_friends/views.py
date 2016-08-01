@@ -20,7 +20,7 @@ def index():
         my_uses = me.qruse_set.order_by(QRUse.when.desc())
     else:
         my_uses = None
-    qrs = QRCode.select().order_by(QRCode.registrant)
+    qrs = QRCode.select().order_by(QRCode.status.desc(), QRCode.registrant)
     # TODO: sort QRs by total uses...
     return render_template('index.html', my_uses=my_uses, qrs=qrs)
 
@@ -35,56 +35,41 @@ def about():
 def pick_barcode():
     me = User(**current_user._data)
 
+    # Algorithm to pick cards:
+    # - First use any potentially hot cards, then medium, then mild, then nada.
+    # - Within each category, use the least-used-this-month card first.
+    # - Never pick a card that's been used today.
+    # This might require some intervention if we're not on track, but that's ok.
+
     today = datetime.date.today()
-    begin = datetime.datetime.combine(today, datetime.time.min)
-    end = datetime.datetime.combine(today, datetime.time.max)
-    total_days = calendar.monthrange(today.year, today.month)[1]
-    target = min(int(math.ceil(11 * today.day / total_days)) + 1, 11)
+    today_begin = datetime.datetime.combine(today, datetime.time.min)
+    today_end = datetime.datetime.combine(today, datetime.time.max)
+    month_begin = datetime.datetime.combine(
+        today.replace(day=1), datetime.time.min)
+    month_end = datetime.datetime.combine(
+        today.replace(day=calendar.monthrange(today.year, today.month)[1]),
+        datetime.time.max)
 
     uses_today = (QRUse.select()
-                       .where(QRUse.when >= begin)
-                       .where(QRUse.when <= end)
+                       .where(QRUse.when >= today_begin)
+                       .where(QRUse.when <= today_end)
                        .where(QRUse.confirmed | (QRUse.confirmed >> None)))
     q = (QRCode
         .select(QRCode, fn.Count(QRUse.id).alias('count'))
-        .join(QRUse, JOIN.LEFT_OUTER)
+        .join(QRUse, JOIN.LEFT_OUTER,
+              on=(QRUse.qr_code == QRCode.id)
+                 & (QRUse.when >= month_begin)
+                 & (QRUse.when <= month_end))
         .group_by(QRCode.id)
-        .order_by(SQL('count').desc()))
+        .order_by(QRCode.status.desc(), SQL('count').asc()))
     used_today = list(QRCode.select().join(QRUse).where(QRUse.id << uses_today))
     if used_today:  # SQL breaks on empty IN queries...
         q = q.where(QRCode.id.not_in(used_today))
 
-    # TEMPORARY HACK: use Kelvin's, then Dougal's, then Ameya's, then others
-    q = list(q)
-    for pref in [3, 1, 2, 4, 6, 5]:
-        try:
-            qr = next(qr for qr in q if qr.id == pref and qr.count < 11)
-        except StopIteration:
-            pass
-        else:
-            break
-    else:
+    try:
+        qr = q.get()
+    except QRCode.DoesNotExist:
         return render_template('no_codes.html', uses_today=uses_today)
-
-    # # could *almost* do this in SQL, but it's hard, so don't.
-    # max_below = None
-    # min_above = None
-    # for qr in q:
-    #     if qr.id is None or qr.count >= 11:
-    #         pass
-    #     elif qr.count < target:
-    #         if max_below is None or qr.count > max_below.count:
-    #             max_below = qr
-    #     else:
-    #         if min_above is None or qr.count < min_above.count:
-    #             min_above = qr
-
-    # if max_below is not None:
-    #     qr = max_below
-    # elif min_above is not None:
-    #     qr = min_above
-    # else:
-    #     return render_template('no_codes.html', uses_today=uses_today)
 
     qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
                    confirmed=None)

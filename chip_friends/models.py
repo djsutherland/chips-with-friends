@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import calendar
 import datetime
 
 from flask_security import UserMixin, RoleMixin
@@ -64,18 +65,37 @@ class Connection(BaseModel):
 
 ################################################################################
 
+STATUSES = [('0', 'none'), ('1', 'mild'), ('2', 'medium'), ('3', 'hot')]
+STATUS_NAME = {k: v for k, v in STATUSES}
+STATUS_CODE = {v: k for k, v in STATUSES}
 
 class QRCode(BaseModel):
     barcode = pw.TextField()
     registrant = pw.CharField()
     phone = pw.CharField()
+    status = pw.CharField(max_length=1, choices=STATUSES)
 
     def __unicode__(self):
-        return "{}".format(self.registrant)
+        return "{} ({})".format(self.registrant, self.status_name)
+
+    @property
+    def status_name(self):
+        return STATUS_NAME[self.status]
 
     def total_uses(self):
         return len(self.qruse_set
                        .where(QRUse.confirmed | (QRUse.confirmed >> None)))
+
+    def uses_this_month(self):
+        today = datetime.date.today()
+        begin = datetime.datetime.combine(
+            today.replace(day=1), datetime.time.min)
+        end = datetime.datetime.combine(
+            today.replace(day=calendar.monthrange(today.year, today.month)[1]),
+            datetime.time.max)
+        return len(self.qruse_set
+                       .where(QRUse.confirmed | (QRUse.confirmed >> None))
+                       .where(QRUse.when >= begin).where(QRUse.when <= end))
 
     def uses(self):
         return self.qruse_set.where(QRUse.confirmed | (QRUse.confirmed >> None))

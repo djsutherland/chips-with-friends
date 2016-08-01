@@ -19,33 +19,43 @@
     #use-barcode:hover {
         background-color: #f30;
     }
+
     #uses .canceled .date, #uses .canceled .name {
         text-decoration: line-through;
     }
-    #uses .unknown .status, #uses .unknown .update {
+    #uses .unknown .confirmed, #uses .unknown .update {
         font-weight: bold;
     }
-    #uses .confirmed, #uses .canceled, #uses .unknown, #uses .redeemed, #cards .total-uses, #cards .used-today {
+    #uses .confirmed, #uses .canceled, #uses .unknown, #uses .redeemed {
         text-align: center;
     }
-    #new-card {
-        font-size: 1em;
+    #uses .update {
+        font-size: 30px;
     }
-    .used-today {
+
+    #cards .status, #cards .month-uses, #cards .used-today {
+        text-align: center;
+    }
+    #cards .status-hot { background-color: #492; }
+    #cards .status-medium { background-color: #dd2; }
+    #cards .status-mild { background-color: #44e; }
+    #cards .status-none { background-color: #aaa; }
+    #cards .used-today {
         color: #fff;
         font-weight: bold;
     }
-    .used-today.used {
+    #cards .used-today.used {
         background-color: #492;
     }
-    .used-today.unused {
+    #cards .used-today.unused {
         background-color: #a30;
     }
-    .update {
+    #cards .used-this {
         font-size: 30px;
     }
-    .used-this {
-        font-size: 30px;
+
+    #new-card {
+        font-size: 1em;
     }
     </style>
 {% endblock %}
@@ -76,7 +86,7 @@
 <tr class="{% if use.confirmed == true %}confirmed{% elif use.confirmed == false %}canceled{% else %}unknown{% endif %}">
 <td class="date">{{ use.when.strftime("%m/%d") }}</td>
 <td class="name">{{ use.qr_code.registrant }}</td>
-<td class="status">{% if use.redeemed_free %}free{% elif use.confirmed == true %}paid{% else %}???{% endif %}</td>
+<td class="confirmed">{% if use.redeemed_free %}free{% elif use.confirmed == true %}paid{% else %}???{% endif %}</td>
 <td class="update"><a href="{{ url_for('use', use_id=use.id) }}">&#9998;</a></td>
 </tr>
 {% endfor %}
@@ -91,7 +101,8 @@
 <thead>
 <tr>
   <th>Whose</th>
-  <th>Total uses</th>
+  <th>Status</th>
+  <th>Uses</th>
   <th>Used today?</th>
   <th> </th>
 </tr>
@@ -100,7 +111,8 @@
 {% for qr in qrs %}
 <tr>
   <td class="registrant">{{ qr.registrant }}</td>
-  <td class="total-uses">{{ qr.total_uses() }}</td>
+  <td class="status status-{{ qr.status_name }}">{{ qr.status_name }}</td>
+  <td class="month-uses">{{ qr.uses_this_month() }}</td>
   <td class="used-today {% if qr.used_today() %}used{% else %}unused{% endif %}">{% if qr.used_today() %}✓{% else %}×{% endif %}</td>
   <td class="used-this"><a href="{{ url_for('use_specific', qr_id=qr.id) }}">&#9997;</a></td>
 </tr>
