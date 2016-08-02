@@ -76,7 +76,7 @@ class QRCode(BaseModel):
     worst_status = pw.CharField(max_length=1, choices=STATUSES)
 
     def __unicode__(self):
-        return "{} ({})".format(self.registrant, self.status_name)
+        return "{} ({})".format(self.registrant, self.worst_status_name)
 
     @property
     def worst_status_name(self):
