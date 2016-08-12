@@ -4,6 +4,7 @@ import datetime
 
 from flask_security import UserMixin, RoleMixin
 import peewee as pw
+from peewee import JOIN, SQL, fn
 
 from .app import db
 
@@ -32,6 +33,12 @@ class User(BaseModel, UserMixin):
 
     def __unicode__(self):
         return '{}'.format(self.name)
+
+    @classmethod
+    def with_uses(cls):
+        return (cls.select(cls, fn.Count(QRUse.id).alias('count'))
+                   .join(QRUse, JOIN.LEFT_OUTER).group_by(User.id)
+                   .order_by(SQL('count').desc(), cls.name))
 
 
 class UserRoles(BaseModel):
