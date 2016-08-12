@@ -68,7 +68,7 @@
 {% else %}
 <p>Hi not-logged-in person! You could <a href="{{ url_for('about') }}">learn how the site works</a> first if you'd like.</p>
 
-<p><form action="{{ url_for('security.login') }}" method="POST"><input type="submit" value="Login" id="use-barcode" /></form></p>
+<p><form action="{{ url_for('security.login') }}"><input type="submit" value="Login" id="use-barcode" /></form></p>
 <p></p>
 {% endif %}
 
