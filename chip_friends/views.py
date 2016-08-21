@@ -18,12 +18,14 @@ def index():
     if current_user.is_authenticated:
         me = User(**current_user._data)
         my_uses = me.qruse_set.order_by(QRUse.when.desc())
+        n_unconfirmed = len(me.qruse_set.where(QRUse.confirmed >> None))
     else:
-        my_uses = None
+        my_uses = n_unconfirmed = None
     qrs = QRCode.select().order_by(
         QRCode.worst_status.desc(), QRCode.registrant)
     # TODO: sort QRs by total uses...
-    return render_template('index.html', my_uses=my_uses, qrs=qrs)
+    return render_template(
+            'index.html', my_uses=my_uses, qrs=qrs, n_unconfirmed=n_unconfirmed)
 
 
 @app.route('/about/')

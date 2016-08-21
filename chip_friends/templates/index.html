@@ -57,12 +57,21 @@
     #new-card {
         font-size: 1em;
     }
+
+    #unconfirmed-msg {
+        font-weight: bold;
+    }
     </style>
 {% endblock %}
 
 {% block body %}
 {% if current_user.is_authenticated %}
 <p>Hi {{ current_user.name }}! (<a href="{{ url_for('security.logout') }}">logout</a>)</p>
+{% if n_unconfirmed %}
+<p id="unconfirmed-msg">
+You have {{ n_unconfirmed }} use(s) pending. Please scroll down and confirm whether you used the card or not.
+</p>
+{% endif %}
 
 <p><form action="{{ url_for('pick_barcode') }}" method="POST"><input type="submit" value="Use a QR code" id="use-barcode" /></form></p>
 {% else %}
