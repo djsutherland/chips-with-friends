@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import bisect
 import calendar
 import datetime
 
@@ -75,6 +76,7 @@ class Connection(BaseModel):
 STATUSES = [('0', 'none'), ('1', 'mild'), ('2', 'medium'), ('3', 'hot')]
 STATUS_NAME = {k: v for k, v in STATUSES}
 STATUS_CODE = {v: k for k, v in STATUSES}
+THRESHOLDS = [0, 4, 8, 11]
 
 class QRCode(BaseModel):
     barcode = pw.TextField()
@@ -103,6 +105,10 @@ class QRCode(BaseModel):
         return len(self.qruse_set
                        .where(QRUse.confirmed | (QRUse.confirmed >> None))
                        .where(QRUse.when >= begin).where(QRUse.when <= end))
+
+    def status_name_this_month(self):
+        status = bisect.bisect_right(THRESHOLDS, self.uses_this_month()) - 1
+        return STATUS_NAME[str(status)]
 
     def uses(self):
         return self.qruse_set.where(QRUse.confirmed | (QRUse.confirmed >> None))
