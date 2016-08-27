@@ -1,7 +1,7 @@
 from __future__ import division, unicode_literals
+from bisect import bisect
 import calendar
 import datetime
-import math
 
 from flask import abort, redirect, render_template, request, url_for
 from flask_login import current_user
@@ -10,7 +10,7 @@ from peewee import fn, JOIN, SQL
 
 from .app import app
 from .forms import UsageForm, QRCodeForm
-from .models import User, QRCode, QRUse
+from .models import User, QRCode, QRUse, THRESHOLDS
 
 
 @app.route('/')
@@ -69,10 +69,15 @@ def pick_barcode():
     if used_today:  # SQL breaks on empty IN queries...
         q = q.where(QRCode.id.not_in(used_today))
 
-    for qr in q:
-        if qr.count < 11:
-            break
-    else:
+    # TEMPORARY:
+    # Use the one closest to getting a reward, sorted by worst-month status
+    try:
+        qr = max(
+            (qr for qr in q if qr.count < 11),
+            key=lambda qr: (
+                qr.worst_status,
+                qr.count - THRESHOLDS[bisect(THRESHOLDS, qr.count)]))
+    except StopIteration:
         return render_template('no_codes.html', uses_today=uses_today)
 
     qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
