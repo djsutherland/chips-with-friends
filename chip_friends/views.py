@@ -69,9 +69,10 @@ def pick_barcode():
     if used_today:  # SQL breaks on empty IN queries...
         q = q.where(QRCode.id.not_in(used_today))
 
-    try:
-        qr = q.get()
-    except QRCode.DoesNotExist:
+    for qr in q:
+        if qr.count < 11:
+            break
+    else:
         return render_template('no_codes.html', uses_today=uses_today)
 
     qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
