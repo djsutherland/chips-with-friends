@@ -72,11 +72,16 @@ def pick_barcode():
     # TEMPORARY:
     # Use the one closest to getting a reward, sorted by worst-month status
     try:
+        days_left = (month_end.date() - today).days + 1
+        def thresh(qr):
+            next_thresh = THRESHOLDS[bisect(THRESHOLDS, qr.count)]
+            uses_left = next_thresh - qr.count
+            if uses_left > days_left:
+                uses_left += 10
+            return -uses_left
         qr = max(
             (qr for qr in q if qr.count < 11),
-            key=lambda qr: (
-                qr.worst_status,
-                qr.count - THRESHOLDS[bisect(THRESHOLDS, qr.count)]))
+            key=lambda qr: (qr.worst_status, thresh(qr)))
     except (StopIteration, ValueError):
         # ValueError: max() arg is an empty sequence
         return render_template('no_codes.html', uses_today=uses_today)
