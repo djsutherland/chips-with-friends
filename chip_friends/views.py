@@ -77,7 +77,8 @@ def pick_barcode():
             key=lambda qr: (
                 qr.worst_status,
                 qr.count - THRESHOLDS[bisect(THRESHOLDS, qr.count)]))
-    except StopIteration:
+    except (StopIteration, ValueError):
+        # ValueError: max() arg is an empty sequence
         return render_template('no_codes.html', uses_today=uses_today)
 
     qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
