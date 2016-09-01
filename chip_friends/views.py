@@ -69,22 +69,28 @@ def pick_barcode():
     if used_today:  # SQL breaks on empty IN queries...
         q = q.where(QRCode.id.not_in(used_today))
 
-    # TEMPORARY:
-    # Use the one closest to getting a reward, sorted by worst-month status
-    try:
-        days_left = (month_end.date() - today).days + 1
-        def thresh(qr):
-            next_thresh = THRESHOLDS[bisect(THRESHOLDS, qr.count)]
-            uses_left = next_thresh - qr.count
-            if uses_left > days_left:
-                uses_left += 10
-            return -uses_left
-        qr = max(
-            (qr for qr in q if qr.count < 11),
-            key=lambda qr: (qr.worst_status, thresh(qr)))
-    except (StopIteration, ValueError):
-        # ValueError: max() arg is an empty sequence
-        return render_template('no_codes.html', uses_today=uses_today)
+    if True:  # early-month: use the least-used highest-status card
+        try:
+            qr = q.get()
+        except QRCode.DoesNotExist:
+            return render_template('no_codes.html', uses_today=uses_today)
+    else:
+        # late-month strategy:
+        # among the highest-status cards, the one closest to getting a reward
+        try:
+            days_left = (month_end.date() - today).days + 1
+            def thresh(qr):
+                next_thresh = THRESHOLDS[bisect(THRESHOLDS, qr.count)]
+                uses_left = next_thresh - qr.count
+                if uses_left > days_left:
+                    uses_left += 10
+                return -uses_left
+            qr = max(
+                (qr for qr in q if qr.count < 11),
+                key=lambda qr: (qr.worst_status, thresh(qr)))
+        except (StopIteration, ValueError):
+            # ValueError: max() arg is an empty sequence
+            return render_template('no_codes.html', uses_today=uses_today)
 
     qr_use = QRUse(user=me, qr_code=qr, when=datetime.datetime.now(),
                    confirmed=None)
