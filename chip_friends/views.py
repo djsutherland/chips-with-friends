@@ -69,7 +69,7 @@ def pick_barcode():
     if used_today:  # SQL breaks on empty IN queries...
         q = q.where(QRCode.id.not_in(used_today))
 
-    if True:  # early-month: use the least-used highest-status card
+    if False:  # early-month: use the least-used highest-status card
         try:
             qr = q.get()
         except QRCode.DoesNotExist:
